@@ -1,16 +1,23 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   Routes,
   Route,
   useNavigationType,
   useLocation,
 } from "react-router-dom";
-import Desktop from "./pages/Desktop";
+import Layout from "./components/Layout";
+import Homepage from "./pages/Homepage";
 
 function App() {
   const action = useNavigationType();
   const location = useLocation();
   const pathname = location.pathname;
+
+  const [backtop, setBacktop] = useState(false)
+
+  const changeBacktop = (bool) => {
+    setBacktop(bool);
+  }
 
   useEffect(() => {
     if (action !== "POP") {
@@ -18,34 +25,11 @@ function App() {
     }
   }, [action, pathname]);
 
-  useEffect(() => {
-    let title = "";
-    let metaDescription = "";
-
-    switch (pathname) {
-      case "/":
-        title = "";
-        metaDescription = "";
-        break;
-    }
-
-    if (title) {
-      document.title = title;
-    }
-
-    if (metaDescription) {
-      const metaDescriptionTag = document.querySelector(
-        'head > meta[name="description"]'
-      );
-      if (metaDescriptionTag) {
-        metaDescriptionTag.content = metaDescription;
-      }
-    }
-  }, [pathname]);
-
   return (
     <Routes>
-      <Route path="/" element={<Desktop />} />
+      <Route path="/" element={<Layout changeBack={changeBacktop} backtop={backtop} />}>
+        <Route path="/" element={<Homepage />} />
+      </Route>
     </Routes>
   );
 }
